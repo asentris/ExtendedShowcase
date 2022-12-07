@@ -1,2 +1,121 @@
-# ExtendedShowcase
 This details my projects and the features included within them.
+
+___
+# HeroSearch
+### Heroscape companion app used to search characters and create armies.
+- Coroutines / Flow / StateFlow
+    - Coroutines launched with exception handling by default
+        - App does not fail on any coroutine failure
+    - Flows launched with proper scope
+        - Will cancel when either fragment or view model is stopped
+        - Will continue past fragment or view model as needed
+- Data handling
+    - Data layer
+        - Data mappers are used to transform remote data to domain data
+    - View model layer
+        - User input data is asynchronously validated before acceptance
+            - Must be correct length, type (text, number, email), min-max (number), nullable
+        - Local data is requested from Room database and transformed to adapter lists
+        - Requests are asynchronously started via base UseCase class
+            - Handles errors automatically
+            - Posts on main thread, executes outside main thread
+            - Takes scope to run only when needed
+        - Results from requests are returned as Either left (failure) or right (success)
+        - Failures organized by feature:
+            - Database failures
+            - Firebase failures
+            - Firestore failures
+            - Data validation failures
+    - UI layer
+        - User input data that is not valid will show errors and not allow submission
+            - Errors are immediate and update with each user character entry
+        - Contains base classes that share results handling code
+            - Results can be ignored, shown to user, retried
+        - ViewBinding is used to interact with layouts
+- UI
+    - Uses .xml to create UI
+    - UI notifications
+        - Shows snackbars to user on certain actions
+        - Can show toasts to user
+    - Text manipulation
+        - Creates hyperlinks in text that user can click
+        - Creates links in text that go to different part of app
+        - Changes text size, bold, italicized, etc.
+    - Animations
+        - Uses animations to "scale up" search results from top to bottom
+        - Fragment transitions use animations to slide in and out
+        - Android material library used to show interactions with buttons
+        - Xml animation lists are used to combine and animate individual xml vector files
+        - Icons can change picture depending on current selection state
+    - Colors
+        - State lists are used to automatically change button/other colors upon state changes
+        - Colors are applied to most views automatically through styles xml
+    - Multiple unique vector icons created and converted to xml
+    - Background shapes with colors created to improve aesthetics
+    - FAB
+        - Enhanced FAB button that expands to display more FAB options
+    - Navigation drawer
+        - Additionally uses Android navigation component for fragment navigation
+    - Top app bar
+        - Includes tab layout
+        - Uses options menu in app bar
+    - Popup menus used for different features
+    - Dialog fragments are used for adding/editing data
+    - Army creator
+        - Users can select characters and add/remove them from personal army
+        - Users can swipe through each character in the army
+            - Bottom navigation can be used to view different parts of a specific character
+    - Extensive SQLite search functionality
+        - Created unique SQL "SELECT" search creator for enhanced user searches
+        - User can search over 60 different fields
+        - Searches can use the following operators:
+            - contains          - does not contain
+            - equal to          - not equal to
+            - greater than      - not greater than
+            - less than         - not less than
+            - between           - not between
+        - Results can be sorted by multiple fields in alphabetical and reverse order
+        - The results View layout can be changed between two different options
+        - RecyclerView with paging data is used to handle results more efficiently
+    - Character view
+        - Four different bottom navigation tabs are used to display a character
+        - A picture tab is used to display a picture of the character card
+            - The card can be stored locally or is fetched from url using Glide
+            - Url fetched images are cached
+            - Users can change the default picture type they want displayed
+        - A random dice roll is displayed via a bottom sheet dialog fragment
+            - Allows D6 and D20 dice rolls
+            - The specific character values are used for dice quantities, but can be adjusted
+            - Dice rolls are saved and can be reset
+- Storage
+    - Local storage
+        - Preference manager
+            - Saves and edits user preferences
+            - Uses kotlin serialization to store personal user SQL search text
+        - Room database / SQLite
+            - Multiple data classes contain unique and foreign key constraints
+            - Embedded classes include one to one, one to many, many to one, many to many relations
+            - Uses pre-populated data shipped with app
+            - Automatically transfers user data to new database on app updates without data loss
+            - Contains 26 primary classes used to store data
+            - Users can create, edit, delete many different classes that are used to create character
+    - Remote storage - Firebase Firestore
+        - Requests remote data and updates app data
+- Network handling
+    - Checks for network availability
+- Layout
+    - Files organized by features
+    - Features split files into data, domain, and presentation layers
+    - Data layer contains model, repository, and source packages
+    - Domain layer contains model, repository, useCase, and util packages
+    - Presentation layer contains packages for different navigation/fragment elements
+- Testing
+    - Uses Dagger-Hilt for dependency injection, to better test classes
+    - Uses Timber to log and debug information
+    - Includes instrumentation DAO tests for Room database
+    - Contains various unit tests for app logic
+- Gradle
+    - Includes debug and release builds
+    - Imports release build signing config passwords
+        - Allows passwords to be stored in separate file, not included in version control
+    - Exports database schema for version control and database updates
