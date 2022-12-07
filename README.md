@@ -119,3 +119,18 @@ ___
     - Imports release build signing config passwords
         - Allows passwords to be stored in separate file, not included in version control
     - Exports database schema for version control and database updates
+
+___
+# ExampleAndroidFeatures
+- Broadcast Receivers
+    - Airplane mode
+    - Battery level
+- Content Providers
+    - User contacts
+- Intents
+    - Explicit Activity starting
+    - Implicit select and show image
+    - Implicit send email
+- Services
+    - Start and stop service
+    - Send data
